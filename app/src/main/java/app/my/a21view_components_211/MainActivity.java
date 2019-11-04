@@ -2,9 +2,9 @@ package app.my.a21view_components_211;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private CheckBox mBankCardChkBx;
     private CheckBox mMobilePhoneChkBx;
     private CheckBox mCashAddressChkBx;
-    String mean;
+    private String mean;
 
     private void initViews() {
         mInputMoney = findViewById(R.id.inputMoney);
@@ -41,7 +41,20 @@ public class MainActivity extends AppCompatActivity {
         mBtnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainActivity.this, String.format("Перевод %s рублей %s.", mInputMoney.getText(), mean), Toast.LENGTH_LONG).show();
+                int moneyAmount = Integer.parseInt(mInputMoney.getText().toString());
+                String plurals = getResources().getQuantityString(R.plurals.money_transfer_message, moneyAmount);
+                final CharSequence inputMoney = mInputMoney.getText();
+
+                final int quantity;
+                if (TextUtils.isEmpty(inputMoney)) {
+                    quantity = 0;
+                } else {
+                    quantity = Integer.parseInt(inputMoney.toString());
+                }
+
+                final String message = getResources().getQuantityString(R.plurals.money_transfer_message, quantity, quantity, mean, mInputInfo.getText().toString());
+
+                Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -52,28 +65,28 @@ public class MainActivity extends AppCompatActivity {
         mCashAddressChkBx.setChecked(false);
     }
 
-    CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+    private CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
-        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-            if (b) {
+        public void onCheckedChanged(CompoundButton compoundButton, boolean isChkBxChecked) {
+            if (isChkBxChecked) {
                 switch (compoundButton.getId()) {
                     case R.id.bankCardChkBx:
                         resetCheckBoxes();
                         mBankCardChkBx.setChecked(true);
                         mInputInfo.setInputType(InputType.TYPE_CLASS_NUMBER);
-                        mean = "на банковскую карту";
+                        mean = getResources().getString(R.string.toCard);
                         break;
                     case R.id.mobilePhoneChkBx:
                         resetCheckBoxes();
                         mMobilePhoneChkBx.setChecked(true);
                         mInputInfo.setInputType(InputType.TYPE_CLASS_PHONE);
-                        mean = "по номеру телефона";
+                        mean = getResources().getString(R.string.toPhone);
                         break;
                     case R.id.cashAddressChkBx:
                         resetCheckBoxes();
                         mInputInfo.setInputType(InputType.TYPE_CLASS_TEXT);
                         mCashAddressChkBx.setChecked(true);
-                        mean = "наличными по адресу";
+                        mean = getResources().getString(R.string.toAddress);
                         break;
                     default:
                 }

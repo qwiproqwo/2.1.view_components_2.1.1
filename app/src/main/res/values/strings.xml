@@ -6,4 +6,7 @@
     <string name="from_phone">С мобильного телефона</string>
     <string name="cash_on_address">Наличными по адресу</string>
     <string name="test_text">Тестовое сообщение</string>
+    <string name="toCard">на банковскую карту</string>
+    <string name="toPhone">по номеру телефона</string>
+    <string name="toAddress">наличными по адресу</string>
 </resources>
